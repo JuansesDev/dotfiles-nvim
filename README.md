@@ -1,5 +1,7 @@
 # Neovim Configuration
 
+![alt text](preview.png)
+
 Modern Neovim setup for full-stack development with LSP, autocompletion, and Git integration.
 
 ## Structure
