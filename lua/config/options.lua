@@ -19,3 +19,8 @@ opt.ignorecase = true
 opt.smartcase = true
 opt.updatetime = 250
 opt.scrolloff = 4
+
+-- Busqueda de archivos nativa mejorada
+vim.opt.path:append("**")
+vim.opt.wildignore = "*/node_modules/**"
+vim.o.wildignorecase = true

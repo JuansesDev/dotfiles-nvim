@@ -1,4 +1,128 @@
+-- DEFINICIÓN DE LA LÓGICA DE ICONOS (Debe ir ANTES del return)
+local function GetCustomFolderIcon(name)
+  local folder_name = name:lower()
+  
+  -- Mapeo de Iconos y Colores
+  local folders = {
+    -- NÚCLEO / RAÍZ
+    ["src"]          = { "", "Directory" },
+    ["dist"]         = { "", "NonText" },
+    ["build"]        = { "", "NonText" },
+    ["bin"]          = { "", "Operator" },
+    ["public"]       = { "", "GitSignsChange" },
+    ["app"]          = { "", "Type" },
+    ["core"]         = { "", "Special" },
+    ["server"]       = { "", "Function" },
+    ["client"]       = { "", "Constant" },
+    ["node_modules"] = { "", "Comment" },
+    [".git"]         = { "", "Comment" },
+    [".vscode"]      = { "", "Identifier" },
+
+    -- FRONTEND / UI
+    ["components"]   = { "󰆧", "Type" },
+    ["pages"]        = { "", "Special" },
+    ["views"]        = { "", "Special" },
+    ["layouts"]      = { "󰙵", "Identifier" },
+    ["templates"]    = { "󰦱", "String" },
+    ["widgets"]      = { "󰅨", "Type" },
+    ["containers"]   = { "", "Type" },
+    ["fragments"]    = { "󰆧", "Type" },
+    ["modals"]       = { "", "Special" },
+    ["sections"]     = { "󰄱", "Identifier" },
+
+    -- BACKEND / LOGIC
+    ["api"]          = { "", "Function" },
+    ["services"]     = { "󰒋", "Function" },
+    ["controllers"]  = { "", "Function" },
+    ["models"]       = { "", "String" },
+    ["entities"]     = { "󰌗", "String" },
+    ["dto"]          = { "", "String" },
+    ["repositories"] = { "", "Constant" },
+    ["resolvers"]    = { "󰌟", "Function" },
+    ["routes"]       = { "󰄉", "Constant" },
+    ["router"]       = { "󰄉", "Constant" },
+    ["middleware"]   = { "󰡶", "PreProc" },
+    ["handlers"]     = { "", "Function" },
+    ["stores"]       = { "", "String" },
+    ["state"]        = { "", "String" },
+    ["actions"]      = { "󰐥", "Function" },
+    ["reducers"]     = { "", "Function" },
+    ["hooks"]        = { "", "Type" },
+    ["composables"]  = { "", "Type" },
+
+    -- ASSETS / RECURSOS
+    ["assets"]       = { "", "Number" },
+    ["images"]       = { "", "Number" },
+    ["img"]          = { "", "Number" },
+    ["icons"]        = { "", "Number" },
+    ["fonts"]        = { "", "Number" },
+    ["styles"]       = { "", "PreProc" },
+    ["css"]          = { "", "PreProc" },
+    ["scss"]         = { "", "PreProc" },
+    ["sass"]         = { "", "PreProc" },
+    ["media"]        = { "", "Number" },
+    ["static"]       = { "", "Number" },
+    ["resources"]    = { "", "Number" },
+
+    -- UTILS / CONFIG
+    ["utils"]        = { "", "Operator" },
+    ["helpers"]      = { "", "Operator" },
+    ["lib"]          = { "", "Operator" },
+    ["common"]       = { "", "Operator" },
+    ["shared"]       = { "", "Operator" },
+    ["constants"]    = { "", "Constant" },
+    ["directives"]   = { "", "PreProc" },
+    ["plugins"]      = { "", "PreProc" },
+    ["boot"]         = { "", "PreProc" },
+    ["scripts"]      = { "", "PreProc" },
+    ["config"]       = { "", "PreProc" },
+    ["env"]          = { "", "PreProc" },
+    ["environments"] = { "", "PreProc" },
+    ["settings"]     = { "", "PreProc" },
+    ["setup"]        = { "", "PreProc" },
+
+    -- DATABASE
+    ["db"]           = { "", "String" },
+    ["database"]     = { "", "String" },
+    ["migrations"]   = { "", "String" },
+    ["seeds"]        = { "󰽐", "String" },
+    ["seeders"]      = { "󰽐", "String" },
+    ["schemas"]      = { "", "String" },
+    ["queries"]      = { "", "String" },
+
+    -- TESTING
+    ["tests"]        = { "", "String" },
+    ["__tests__"]    = { "", "String" },
+    ["spec"]         = { "", "String" },
+    ["e2e"]          = { "", "String" },
+    ["mocks"]        = { "", "Comment" },
+    ["fixtures"]     = { "", "Comment" },
+    ["coverage"]     = { "", "Identifier" },
+
+    -- DEVOPS / OTROS
+    ["docker"]       = { "", "Identifier" },
+    ["k8s"]          = { "󱃾", "Identifier" },
+    ["kubernetes"]   = { "󱃾", "Identifier" },
+    ["ci"]           = { "", "PreProc" },
+    ["workflows"]    = { "", "PreProc" },
+    ["docs"]         = { "", "Comment" },
+    ["examples"]     = { "", "Comment" },
+    ["locales"]      = { "󰗊", "Constant" },
+    ["i18n"]         = { "󰗊", "Constant" },
+    ["types"]        = { "", "Type" },
+    ["interfaces"]   = { "", "Type" },
+  }
+
+  local data = folders[folder_name]
+  if data then
+    return data[1], data[2]
+  end
+  return nil, nil
+end
+
+-- INICIO DE LA CONFIGURACIÓN DEL PLUGIN
 return {
+  -- 1. TEMA
   {
     "navarasu/onedark.nvim",
     lazy = false,
@@ -9,211 +133,79 @@ return {
     end,
   },
 
+  -- 2. DEPENDENCIAS UI
   { "nvim-tree/nvim-web-devicons", opts = { default = true, color_icons = true } },
   { "MunifTanjim/nui.nvim" },
 
+  -- 3. NEO-TREE
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
     lazy = false,
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim" },
-    keys = {
-      { "<leader>e", ":Neotree toggle<CR>", desc = "Toggle Explorer" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
     },
+    keys = {
+      { "<leader>e", "<cmd>Neotree toggle<CR>", desc = "Toggle Explorer" },
+    },
+    
     config = function(_, opts)
-      -- Define custom highlights for git and diagnostics
-      -- These colors are inspired by the onedark theme palette for consistency
-      vim.api.nvim_set_hl(0, "NeoTreeGitUntracked", { fg = "#98C379" }) -- Green
-      vim.api.nvim_set_hl(0, "NeoTreeGitModified", { fg = "#61AFEF" })  -- Blue
-      vim.api.nvim_set_hl(0, "NeoTreeDiagnosticWarn", { fg = "#E5C07B" }) -- Yellow
+      -- Colores personalizados para Git y Diagnósticos
+      local hl = vim.api.nvim_set_hl
+      hl(0, "NeoTreeGitUntracked", { fg = "#98C379" }) 
+      hl(0, "NeoTreeGitModified", { fg = "#61AFEF" })  
+      hl(0, "NeoTreeDiagnosticWarn", { fg = "#E5C07B" }) 
 
       require("neo-tree").setup(opts)
-      vim.cmd("Neotree show")
     end,
+
     opts = {
       close_if_last_window = true,
+      enable_git_status = true,
+      enable_diagnostics = true,
+      
+      default_component_configs = {
+        indent = { with_expanders = true, expander_collapsed = "", expander_expanded = "" },
+        git_status = {
+          symbols = { untracked = "U", modified = "", deleted = "✖", renamed = "󰑕" },
+        },
+      },
+
       filesystem = {
-        filtered_items = { visible = true, hide_dotfiles = false },
+        bind_to_cwd = false,
         
+        -- Fix para que el árbol siga al archivo abierto
+        follow_current_file = {
+          enabled = true,
+          leave_dirs_open = false,
+        },
+        use_libuv_file_watcher = true, 
+
+        filtered_items = { visible = true, hide_dotfiles = false },
+
         components = {
           icon = function(config, node, state)
+            -- 1. Archivos
             if node.type == 'file' then
               local success, web_devicons = pcall(require, 'nvim-web-devicons')
               if success then
                 local devicon, hl = web_devicons.get_icon(node.name, node.ext)
-                return {
-                  text = devicon or config.default,
-                  highlight = hl or config.highlight
-                }
+                return { text = devicon or config.default, highlight = hl or config.highlight }
               end
             end
-            
-            -- Custom colored folder icons
+
+            -- 2. Directorios (Usa la función definida arriba)
             if node.type == 'directory' then
-              local folder_name = node.name:lower()
-              
-              local special_folders = {
-                -- Base
-                ["src"]          = { icon = "", hl = "Directory" },
-                ["dist"]         = { icon = "", hl = "NonText" },
-                ["build"]        = { icon = "", hl = "NonText" },
-                ["bin"]          = { icon = "", hl = "Operator" },
-                ["public"]       = { icon = "", hl = "GitSignsChange" },
-                ["app"]          = { icon = "", hl = "Type" },
-                ["core"]         = { icon = "", hl = "Special" },
-                ["server"]       = { icon = "", hl = "Function" },
-                ["client"]       = { icon = "", hl = "Constant" },
-                ["node_modules"] = { icon = "", hl = "Comment" },
-                [".git"]         = { icon = "", hl = "Comment" },
-                [".vscode"]      = { icon = "", hl = "Identifier" },
-
-                -- Components & UI
-                ["components"] = { icon = "󰆧", hl = "Type" },
-                ["pages"]      = { icon = "", hl = "Special" },
-                ["views"]      = { icon = "", hl = "Special" },
-                ["layouts"]    = { icon = "󰙵", hl = "Identifier" },
-                ["templates"]  = { icon = "󰦱", hl = "String" },
-                ["widgets"]    = { icon = "󰅨", hl = "Type" },
-                ["containers"] = { icon = "containers", hl = "Type" },
-                ["fragments"]  = { icon = "󰆧", hl = "Type" },
-                ["modals"]     = { icon = "", hl = "Special" },
-                ["sections"]   = { icon = "󰄱", hl = "Identifier" },
-
-                -- Business Logic
-                ["api"]          = { icon = "", hl = "Function" },
-                ["services"]     = { icon = "󰒋", hl = "Function" },
-                ["controllers"]  = { icon = "", hl = "Function" },
-                ["models"]       = { icon = "", hl = "String" },
-                ["entities"]     = { icon = "󰌗", hl = "String" },
-                ["dto"]          = { icon = "", hl = "String" },
-                ["repositories"] = { icon = "", hl = "Constant" },
-                ["resolvers"]    = { icon = "󰌟", hl = "Function" },
-                ["routes"]       = { icon = "󰄉", hl = "Constant" },
-                ["router"]       = { icon = "󰄉", hl = "Constant" },
-                ["middleware"]   = { icon = "󰡶", hl = "PreProc" },
-                ["handlers"]     = { icon = "", hl = "Function" },
-                ["stores"]       = { icon = "", hl = "String" },
-                ["state"]        = { icon = "", hl = "String" },
-                ["actions"]      = { icon = "󰐥", hl = "Function" },
-                ["reducers"]     = { icon = "", hl = "Function" },
-                ["hooks"]        = { icon = "", hl = "Type" },
-                ["composables"]  = { icon = "", hl = "Type" },
-
-                -- Assets & Resources
-                ["assets"]     = { icon = "", hl = "Number" },
-                ["images"]     = { icon = "", hl = "Number" },
-                ["img"]        = { icon = "", hl = "Number" },
-                ["icons"]      = { icon = "icons", hl = "Number" },
-                ["fonts"]      = { icon = "", hl = "Number" },
-                ["styles"]     = { icon = "", hl = "PreProc" },
-                ["css"]        = { icon = "", hl = "PreProc" },
-                ["scss"]       = { icon = "", hl = "PreProc" },
-                ["sass"]       = { icon = "", hl = "PreProc" },
-                ["media"]      = { icon = "", hl = "Number" },
-                ["static"]     = { icon = "staticfiles", hl = "Number" },
-                ["resources"]  = { icon = "resources", hl = "Number" },
-
-                -- Utilities & Helpers
-                ["utils"]      = { icon = "", hl = "Operator" },
-                ["helpers"]    = { icon = "helpers", hl = "Operator" },
-                ["lib"]        = { icon = "", hl = "Operator" },
-                ["common"]     = { icon = "", hl = "Operator" },
-                ["shared"]     = { icon = "", hl = "Operator" },
-                ["constants"]  = { icon = "constants", hl = "Constant" },
-                ["directives"] = { icon = "directives", hl = "PreProc" },
-                ["plugins"]    = { icon = "plugins", hl = "PreProc" },
-                ["boot"]       = { icon = "", hl = "PreProc" },
-                ["scripts"]    = { icon = "", hl = "PreProc" },
-
-                -- Config & Environment
-                ["config"]       = { icon = "", hl = "PreProc" },
-                ["env"]          = { icon = "", hl = "PreProc" },
-                ["environments"] = { icon = "", hl = "PreProc" },
-                ["settings"]     = { icon = "", hl = "PreProc" },
-                ["setup"]        = { icon = "", hl = "PreProc" },
-                ["meta"]         = { icon = "", hl = "Comment" },
-
-                -- Database
-                ["db"]         = { icon = "", hl = "String" },
-                ["database"]   = { icon = "", hl = "String" },
-                ["migrations"] = { icon = "", hl = "String" },
-                ["seeds"]      = { icon = "󰽐", hl = "String" },
-                ["seeders"]    = { icon = "󰽐", hl = "String" },
-                ["schemas"]    = { icon = "", hl = "String" },
-                ["queries"]    = { icon = "", hl = "String" },
-
-                -- Testing & Quality
-                ["tests"]      = { icon = "", hl = "String" },
-                ["__tests__"]  = { icon = "", hl = "String" },
-                ["spec"]       = { icon = "", hl = "String" },
-                ["e2e"]        = { icon = "", hl = "String" },
-                ["mocks"]      = { icon = "mocks", hl = "Comment" },
-                ["fixtures"]   = { icon = "fixtures", hl = "Comment" },
-                ["coverage"]   = { icon = "", hl = "Identifier" },
-                ["benchmarks"] = { icon = "󰄕", hl = "Identifier" },
-
-                -- i18n & Types
-                ["locales"]      = { icon = "󰗊", hl = "Constant" },
-                ["i18n"]         = { icon = "󰗊", hl = "Constant" },
-                ["translations"] = { icon = "󰗊", hl = "Constant" },
-                ["lang"]         = { icon = "󰗊", hl = "Constant" },
-                ["types"]        = { icon = "", hl = "Type" },
-                ["interfaces"]   = { icon = "", hl = "Type" },
-                ["enums"]        = { icon = "", hl = "Type" },
-
-                -- DevOps & Others
-                ["docker"]       = { icon = "", hl = "Identifier" },
-                ["k8s"]          = { icon = "kubernetes", hl = "Identifier" },
-                ["kubernetes"]   = { icon = "kubernetes", hl = "Identifier" },
-                ["ci"]           = { icon = "", hl = "PreProc" },
-                ["workflows"]    = { icon = "", hl = "PreProc" },
-                ["docs"]         = { icon = "", hl = "Comment" },
-                ["examples"]     = { icon = "examples", hl = "Comment" },
-                ["vendor"]       = { icon = "", hl = "Comment" },
-                ["packages"]     = { icon = "", hl = "NonText" },
-                ["cache"]        = { icon = "", hl = "Comment" },
-                ["temp"]         = { icon = "temp", hl = "Comment" },
-                ["tmp"]          = { icon = "temp", hl = "Comment" },
-              }
-              
-              local data = special_folders[folder_name]
-              if data then
-                return { text = data.icon, highlight = data.hl }
-              end
-              
-              -- Return default folder icon if not special
-              if node.expanded then
-                return { text = "", highlight = "NeoTreeDirectoryIcon" }
-              else
-                return { text = "", highlight = "NeoTreeDirectoryIcon" }
-              end
+              local icon, hl = GetCustomFolderIcon(node.name)
+              return { text = icon or "", highlight = hl or "NeoTreeDirectoryIcon" }
             end
             
             return { text = config.default, highlight = config.highlight }
           end
         },
       },
-      default_component_configs = {
-        indent = { with_expanders = true, expander_collapsed = "", expander_expanded = "" },
-        diagnostics = {
-          symbols = {
-            warn = " ",
-          },
-          highlights = {
-            warn = "NeoTreeDiagnosticWarn",
-          },
-        },
-        git_status = {
-          symbols = {
-            untracked = "U",
-            modified = "",
-          },
-          highlights = {
-            untracked = "NeoTreeGitUntracked",
-            modified = "NeoTreeGitModified",
-          },
-        },
-      }
     },
   }
 }
