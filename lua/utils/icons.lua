@@ -1,0 +1,113 @@
+local M = {}
+
+local folders = {
+  ["src"]          = { "", "Directory" },
+  ["dist"]         = { "", "NonText" },
+  ["build"]        = { "", "NonText" },
+  ["bin"]          = { "", "Operator" },
+  ["public"]       = { "", "GitSignsChange" },
+  ["app"]          = { "", "Type" },
+  ["core"]         = { "", "Special" },
+  ["server"]       = { "", "Function" },
+  ["client"]       = { "", "Constant" },
+  ["node_modules"] = { "", "Comment" },
+  [".git"]         = { "", "Comment" },
+  [".vscode"]      = { "", "Identifier" },
+
+  ["components"]   = { "󰆧", "Type" },
+  ["pages"]        = { "", "Special" },
+  ["views"]        = { "", "Special" },
+  ["layouts"]      = { "󰙵", "Identifier" },
+  ["templates"]    = { "󰦱", "String" },
+  ["widgets"]      = { "󰅨", "Type" },
+  ["containers"]   = { "", "Type" },
+  ["fragments"]    = { "󰆧", "Type" },
+  ["modals"]       = { "", "Special" },
+  ["sections"]     = { "󰄱", "Identifier" },
+
+  ["api"]          = { "", "Function" },
+  ["services"]     = { "󰒋", "Function" },
+  ["controllers"]  = { "", "Function" },
+  ["models"]       = { "", "String" },
+  ["entities"]     = { "󰌗", "String" },
+  ["dto"]          = { "", "String" },
+  ["repositories"] = { "", "Constant" },
+  ["resolvers"]    = { "󰌟", "Function" },
+  ["routes"]       = { "󰄉", "Constant" },
+  ["router"]       = { "󰄉", "Constant" },
+  ["middleware"]   = { "󰡶", "PreProc" },
+  ["handlers"]     = { "", "Function" },
+  ["stores"]       = { "", "String" },
+  ["state"]        = { "", "String" },
+  ["actions"]      = { "󰐥", "Function" },
+  ["reducers"]     = { "", "Function" },
+  ["hooks"]        = { "", "Type" },
+  ["composables"]  = { "", "Type" },
+
+  ["assets"]       = { "", "Number" },
+  ["images"]       = { "", "Number" },
+  ["img"]          = { "", "Number" },
+  ["icons"]        = { "", "Number" },
+  ["fonts"]        = { "", "Number" },
+  ["styles"]       = { "", "PreProc" },
+  ["css"]          = { "", "PreProc" },
+  ["scss"]         = { "", "PreProc" },
+  ["sass"]         = { "", "PreProc" },
+  ["media"]        = { "", "Number" },
+  ["static"]       = { "", "Number" },
+  ["resources"]    = { "", "Number" },
+
+  ["utils"]        = { "", "Operator" },
+  ["helpers"]      = { "", "Operator" },
+  ["lib"]          = { "", "Operator" },
+  ["common"]       = { "", "Operator" },
+  ["shared"]       = { "", "Operator" },
+  ["constants"]    = { "", "Constant" },
+  ["directives"]   = { "", "PreProc" },
+  ["plugins"]      = { "", "PreProc" },
+  ["boot"]         = { "", "PreProc" },
+  ["scripts"]      = { "", "PreProc" },
+  ["config"]       = { "", "PreProc" },
+  ["env"]          = { "", "PreProc" },
+  ["environments"] = { "", "PreProc" },
+  ["settings"]     = { "", "PreProc" },
+  ["setup"]        = { "", "PreProc" },
+
+  ["db"]           = { "", "String" },
+  ["database"]     = { "", "String" },
+  ["migrations"]   = { "", "String" },
+  ["seeds"]        = { "󰽐", "String" },
+  ["seeders"]      = { "󰽐", "String" },
+  ["schemas"]      = { "", "String" },
+  ["queries"]      = { "", "String" },
+
+  ["tests"]        = { "", "String" },
+  ["__tests__"]    = { "", "String" },
+  ["spec"]         = { "", "String" },
+  ["e2e"]          = { "", "String" },
+  ["mocks"]        = { "", "Comment" },
+  ["fixtures"]     = { "", "Comment" },
+  ["coverage"]     = { "", "Identifier" },
+
+  ["docker"]       = { "", "Identifier" },
+  ["k8s"]          = { "󱃾", "Identifier" },
+  ["kubernetes"]   = { "󱃾", "Identifier" },
+  ["ci"]           = { "", "PreProc" },
+  ["workflows"]    = { "", "PreProc" },
+  ["docs"]         = { "", "Comment" },
+  ["examples"]     = { "", "Comment" },
+  ["locales"]      = { "󰗊", "Constant" },
+  ["i18n"]         = { "󰗊", "Constant" },
+  ["types"]        = { "", "Type" },
+  ["interfaces"]   = { "", "Type" },
+}
+
+function M.get_folder_icon(name)
+  local data = folders[name:lower()]
+  if data then
+    return data[1], data[2]
+  end
+  return nil, nil
+end
+
+return M
