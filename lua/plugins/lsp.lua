@@ -35,9 +35,25 @@ return {
             [vim.diagnostic.severity.INFO]  = "DiagnosticSignInfo",
           },
         },
-        virtual_text = {
-          source = "if_many",
-          prefix = '●',
+        virtual_text = false,
+        virtual_lines = {
+          current_line = true,
+          format = function(diagnostic)
+            local source = diagnostic.source and ("[" .. diagnostic.source .. "] ") or ""
+            local msg = source .. diagnostic.message
+            local width = math.max(60, math.floor(vim.api.nvim_win_get_width(0) * 0.8))
+            local lines = {}
+            for line in msg:gmatch("[^\n]+") do
+              while #line > width do
+                local cut = line:sub(1, width)
+                local space = cut:find("%s[^%s]*$") or width
+                table.insert(lines, line:sub(1, space - 1))
+                line = line:sub(space + 1)
+              end
+              table.insert(lines, line)
+            end
+            return table.concat(lines, "\n")
+          end,
         },
         float = {
           source = "always",
@@ -72,8 +88,17 @@ return {
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
       local servers = {
-        html = {},
-        cssls = {},
+        html = {
+          filetypes = { "html", "vue", "templ" },
+          init_options = {
+            configurationSection = { "html", "css", "javascript" },
+            embeddedLanguages = { css = true, javascript = true },
+            provideFormatter = true,
+          },
+        },
+        cssls = {
+          filetypes = { "css", "scss", "less", "vue" },
+        },
         jsonls = {},
         tailwindcss = {},
         pyright = {},
