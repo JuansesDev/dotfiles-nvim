@@ -10,13 +10,26 @@ return {
 
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
+    lazy = false,
     build = ":TSUpdate",
-    event = { "BufReadPre", "BufNewFile" },
     config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = { "javascript", "typescript", "vue", "html", "css", "json", "lua", "python", "java" },
-        highlight = { enable = true },
-        indent = { enable = true },
+      local parsers = {
+        "javascript", "typescript", "tsx", "vue", "html", "css",
+        "json", "lua", "python", "java", "yaml",
+        "markdown", "markdown_inline", "bash", "vim", "vimdoc", "regex",
+      }
+      require("nvim-treesitter").install(parsers)
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = {
+          "javascript", "typescript", "typescriptreact", "javascriptreact",
+          "vue", "html", "css", "json", "jsonc", "lua", "python", "java",
+          "yaml", "markdown", "sh", "bash", "vim", "help",
+        },
+        callback = function(args)
+          pcall(vim.treesitter.start, args.buf)
+        end,
       })
     end,
   }
