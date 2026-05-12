@@ -1,11 +1,27 @@
 return {
   {
-    "navarasu/onedark.nvim",
+    "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
     config = function()
-      require("onedark").setup({ style = "darker" })
-      require("onedark").load()
+      require("tokyonight").setup({
+        style = "night",
+        transparent = true,
+        terminal_colors = true,
+        styles = {
+          comments = { italic = true },
+          keywords = { italic = false },
+          functions = { bold = true },
+          variables = {},
+          sidebars = "transparent",
+          floats = "transparent",
+        },
+        on_highlights = function(hl, c)
+          hl["@variable"] = { fg = c.fg }
+          hl["@property"] = { fg = c.blue1 }
+        end,
+      })
+      vim.cmd.colorscheme("tokyonight-night")
     end,
   },
 
@@ -82,10 +98,18 @@ return {
         bind_to_cwd = false,
         follow_current_file = {
           enabled = true,
-          leave_dirs_open = false,
+          leave_dirs_open = true,
         },
         use_libuv_file_watcher = true,
         filtered_items = { visible = true, hide_dotfiles = false },
+        window = {
+          mappings = {
+            ["<bs>"] = "noop",
+            ["."] = "noop",
+            ["[g"] = "noop",
+            ["]g"] = "noop",
+          },
+        },
       },
     },
   }
