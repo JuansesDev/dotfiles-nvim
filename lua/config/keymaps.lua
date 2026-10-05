@@ -11,3 +11,8 @@ map('n', '<leader>q', ':q<CR>', { desc = "Quit" })
 map('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = "Limpiar búsqueda" })
 
 map('n', '<leader>d', function() vim.diagnostic.open_float(nil, { border = "rounded", scope = "line" }) end, { desc = "Ver diagnóstico (float)" })
+
+-- Escribir "fin" en minuscula dispara tu comando :Fin (buscador fuzzy).
+-- Vim obliga a que los comandos custom empiecen en mayuscula; esto deja
+-- que tu sigas tecleando "fin" y se convierte en "Fin" solito.
+vim.cmd([[cnoreabbrev <expr> fin (getcmdtype() == ':' && getcmdline() ==# 'fin') ? 'Fin' : 'fin']])
