@@ -64,11 +64,24 @@ return {
         severity_sort = true,
       })
 
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(ev)
+          local opts = { buffer = ev.buf }
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+          vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+          vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+          vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+          vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+          vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+        end,
+      })
+
       require("mason").setup()
       local mason_registry = require("mason-registry")
 
       local function ensure_packages()
-        local critical = { "vue-language-server", "typescript-language-server", "jdtls" }
+        local critical = { "vue-language-server", "typescript-language-server" }
         for _, pkg_name in ipairs(critical) do
           if not mason_registry.is_installed(pkg_name) then
             vim.notify("Installing " .. pkg_name .. "...", vim.log.levels.INFO)
@@ -102,7 +115,6 @@ return {
         jsonls = {},
         tailwindcss = {},
         pyright = {},
-        jdtls = {},
         vue_ls = {},
         ts_ls = {
           filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
