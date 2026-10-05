@@ -1,116 +1,58 @@
 return {
   {
-    "folke/tokyonight.nvim",
+    "kdheepak/monochrome.nvim",
     lazy = false,
     priority = 1000,
     config = function()
-      require("tokyonight").setup({
-        style = "night",
-        transparent = true,
-        terminal_colors = true,
-        styles = {
-          comments = { italic = true },
-          keywords = { italic = false },
-          functions = { bold = true },
-          variables = {},
-          sidebars = "transparent",
-          floats = "transparent",
-        },
-        on_highlights = function(hl, c)
-          hl["@variable"] = { fg = c.fg }
-          hl["@property"] = { fg = c.blue1 }
+      -- Verde-gris oscuro: reemplaza SOLO el tono mas apagado del tema
+      -- (#5e5e5e), el de keywords y nombres de tipo (export/interface/IMeta).
+      -- Los otros dos tonos del monocromo quedan intactos.
+      local dim_green = "#83c092"
+
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        pattern = "monochrome",
+        callback = function()
+          -- Transparencia: quitar solo el fondo, preservando el resto.
+          for _, g in ipairs({
+            "Normal", "NormalNC", "NormalFloat", "FloatBorder",
+            "SignColumn", "LineNr", "EndOfBuffer",
+          }) do
+            local hl = vim.api.nvim_get_hl(0, { name = g })
+            hl.bg, hl.ctermbg = nil, nil
+            vim.api.nvim_set_hl(0, g, hl)
+          end
+
+          -- Tinte verde-gris en el tono apagado (keywords + nombres de tipo).
+          -- NO se toca @type.builtin (number/string), que va en el tono claro.
+          for _, g in ipairs({
+            "Keyword", "Statement", "Conditional", "Repeat",
+            "Include", "Exception", "StorageClass", "Structure",
+            "PreProc", "Type",
+            "@keyword", "@keyword.function", "@keyword.return",
+            "@keyword.operator", "@keyword.import", "@keyword.export",
+            "@keyword.type", "@keyword.conditional", "@keyword.repeat",
+            "@keyword.exception", "@keyword.coroutine", "@keyword.modifier",
+            "@conditional", "@repeat", "@include", "@exception",
+            "@type", "@type.definition", "@type.qualifier",
+            -- estructura del HTML/Vue: nombres de tag = menta
+            "@tag", "@tag.builtin",
+          }) do
+            vim.api.nvim_set_hl(0, g, { fg = dim_green })
+          end
+
+          -- Declaraciones sin usar (LSP "declared but never read"): el tema
+          -- las manda a un gris casi invisible sobre negro. Subir a un gris
+          -- legible pero mas apagado que el codigo normal, y conservar el
+          -- subrayado difuso como senal de "no usado".
+          for _, g in ipairs({ "DiagnosticUnnecessary", "@lsp.mod.unused" }) do
+            vim.api.nvim_set_hl(0, g, { fg = "#8a8a8a", underline = true, sp = "#5e5e5e" })
+          end
         end,
       })
-      vim.cmd.colorscheme("tokyonight-night")
+
+      vim.cmd.colorscheme("monochrome")
     end,
   },
 
   { "nvim-tree/nvim-web-devicons", opts = { default = true, color_icons = true } },
-  { "MunifTanjim/nui.nvim" },
-
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    branch = "v3.x",
-    lazy = false,
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "MunifTanjim/nui.nvim",
-    },
-    keys = {
-      { "<leader>e", "<cmd>Neotree toggle<CR>", desc = "Toggle Explorer" },
-    },
-
-    config = function(_, opts)
-      local hl = vim.api.nvim_set_hl
-      hl(0, "NeoTreeGitUntracked", { fg = "#98C379" })
-      hl(0, "NeoTreeGitModified", { fg = "#61AFEF" })
-      hl(0, "NeoTreeDiagnosticWarn", { fg = "#E5C07B" })
-
-      require("neo-tree").setup(opts)
-    end,
-
-    opts = {
-      close_if_last_window = true,
-      enable_git_status = true,
-      enable_diagnostics = true,
-
-      default_component_configs = {
-        indent = {
-          with_expanders = true,
-          expander_collapsed = ">",
-          expander_expanded = "v",
-        },
-        icon = {
-          folder_closed = "\xEF\x81\xBB",
-          folder_open   = "\xEF\x81\xBC",
-          folder_empty  = "\xEF\x84\x94",
-          default       = "\xEF\x85\x9B",
-          provider = function(icon, node, state)
-            if node.type == "directory" then
-              local ok, icons = pcall(require, "utils.icons")
-              if ok then
-                local custom, hl = icons.get_folder_icon(node.name)
-                if custom and custom ~= "" then
-                  icon.text = custom
-                  icon.highlight = hl or "NeoTreeDirectoryIcon"
-                end
-              end
-            elseif node.type == "file" or node.type == "terminal" then
-              local ok, web_devicons = pcall(require, "nvim-web-devicons")
-              if ok then
-                local devicon, hl = web_devicons.get_icon(node.name, node.ext)
-                if devicon then
-                  icon.text = devicon
-                  icon.highlight = hl or icon.highlight
-                end
-              end
-            end
-            return icon
-          end,
-        },
-        git_status = {
-          symbols = { untracked = "U", modified = "", deleted = "✖", renamed = "󰑕" },
-        },
-      },
-
-      filesystem = {
-        bind_to_cwd = false,
-        follow_current_file = {
-          enabled = true,
-          leave_dirs_open = true,
-        },
-        use_libuv_file_watcher = true,
-        filtered_items = { visible = true, hide_dotfiles = false },
-        window = {
-          mappings = {
-            ["<bs>"] = "noop",
-            ["."] = "noop",
-            ["[g"] = "noop",
-            ["]g"] = "noop",
-          },
-        },
-      },
-    },
-  }
 }
