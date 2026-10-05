@@ -12,7 +12,8 @@ opt.shiftwidth = 2
 opt.expandtab = true
 opt.smartindent = true
 
-opt.clipboard = "unnamedplus"
+-- El portapapeles vive en config/clipboard.lua: depende del sistema
+-- (macOS / Linux / WSL / SSH) y necesita fijar vim.g.clipboard antes.
 opt.ignorecase = true
 opt.smartcase = true
 opt.updatetime = 250
