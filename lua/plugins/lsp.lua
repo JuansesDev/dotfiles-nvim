@@ -80,6 +80,17 @@ return {
       require("mason").setup()
       local mason_registry = require("mason-registry")
 
+      -- Los 7 servidores que usa esta config son scripts de Node
+      -- (#!/usr/bin/env node). Sin Node.js, Mason no los instala y el LSP se
+      -- queda muerto SIN mostrar ningun error: comprobado en un Ubuntu limpio,
+      -- donde aparecieron 0 clientes y ni un solo mensaje. Mejor avisar claro.
+      if vim.fn.executable("node") ~= 1 then
+        vim.notify(
+          "Node.js no encontrado: los servidores LSP no van a arrancar. Instala nodejs y npm.",
+          vim.log.levels.WARN
+        )
+      end
+
       local function ensure_packages()
         local critical = { "vue-language-server", "typescript-language-server" }
         for _, pkg_name in ipairs(critical) do
