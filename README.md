@@ -44,14 +44,22 @@ Modern Neovim setup for full-stack development with LSP, autocompletion, debuggi
 
 ## Requirements
 
-- **Neovim ≥ 0.11** (ver [Instalar Neovim](#instalar-neovim-moderno))
-- Git
-- Node.js (para la mayoria de LSP servers)
-- A Nerd Font (see [Font Setup](#font-setup))
+Verificado en **Ubuntu 26.04 LTS** y **macOS**. Dos de estas dependencias fallan
+**en silencio** si faltan, asi que no te saltes ninguna.
+
+| Dependencia | Para que | Sin ella |
+|---|---|---|
+| **Neovim ≥ 0.11** | toda la config | media config falla |
+| **`tree-sitter` CLI ≥ 0.26.1** | compilar los parsers | **sin resaltado de sintaxis, y no veras ningun error** |
+| **Node.js + npm** | los 7 servidores LSP | **LSP muerto, sin mensaje de error** |
+| Compilador C (`cc`/`gcc`) | compilar los parsers | sin resaltado, en silencio |
+| `git`, `curl`, `unzip` | instalar plugins y binarios | la instalacion no arranca |
+| `ripgrep` (`rg`) | Telescope `live_grep` | `<leader>fg` no funciona |
+| `fd` | `:Fin` rapido | cae a `find`, mas lento |
+| Una Nerd Font | los iconos | veras cuadritos |
 
 Opcionales, solo si usas esa parte:
 
-- `fd` o `rg` — hacen que `:Fin` y Telescope vuelen
 - Flutter SDK — para `lua/plugins/flutter.lua`
 - Rust toolchain (`rustc`, `cargo`) — para `lua/plugins/rust.lua`
 - Go — para `nvim-dap-go`
@@ -70,6 +78,44 @@ nvim
 ```
 
 Then run `:Mason` to check the language servers and `:checkhealth` if something looks off.
+
+### Dependencias en Debian/Ubuntu (probado)
+
+```bash
+sudo apt update
+sudo apt install -y git curl unzip build-essential nodejs npm ripgrep fd-find
+
+# fd se llama fdfind en Ubuntu; esta config busca "fd"
+mkdir -p ~/.local/bin
+ln -sf "$(command -v fdfind)" ~/.local/bin/fd
+
+# tree-sitter CLI: el de apt (0.25.9) es DEMASIADO VIEJO, nvim-treesitter
+# pide >= 0.26.1. Sin esto TODOS los parsers fallan y sin ningun error.
+curl -fLO https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-cli-linux-x64.zip
+unzip -o tree-sitter-cli-linux-x64.zip -d ~/.local/bin
+chmod +x ~/.local/bin/tree-sitter
+
+# ~/.local/bin no suele estar en el PATH
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# Comprobar que todo responde
+nvim --version | head -1        # >= 0.11
+tree-sitter --version           # >= 0.26.1
+node --version                  # cualquier LTS
+rg --version && fd --version
+cc --version | head -1
+```
+
+Despues de la primera apertura, comprueba que los parsers se compilaron:
+
+```vim
+:checkhealth nvim-treesitter
+```
+
+Si dice que falta `tree-sitter`, la sintaxis **no** estara resaltada aunque
+Neovim no haya mostrado ni un error.
+
 
 ### Instalar Neovim moderno
 
